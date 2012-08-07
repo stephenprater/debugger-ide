@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+require 'slop'
+require 'debugger'
+
+require 'pry'
+
+if RUBY_VERSION < "1.9"
+  raise RuntimeError, "this is the 1.9 only version of the IDE protocol"
+end
+
+params = Slop.parse do
+  banner <<-EOB
+  Using debugger #{Debugger::VERSION}
+  Usage: debugger-ide is supposed to be called from RDT, NetBeans or RubyMine. The
+         command line interface to ruby-debug is rdebug.
+  EOB
+  
+  on :h, :host, "Host name for remote debugging", :argument => true
+  on :p, :port, "Port for remote debugging", :argument => true, :as => :int
+  on '--dispatcher-port', "Port used for multi-process debugging dispater", :argument => true, :as => :int
+  on '--stop', "Stop when script loaded"
+  on :x, '--trace', 'Turn on line tracing'
+  on :l, '--load-mode', 'load moad (expirmental)'
+  on :d, :debug, 'debug self'
+  on '--xml-debug', 'Debug self - send information <messages>s for debugging ruby-debug'
+  on :I, '--include', 'Add path to $LOAD_PATH', :argument => true
+
+  on "--keep-frame-binding", "Keep Frame binding"
+  on "--disable-int-handler", "Disable interrupt signal handler"
+  
+  on :v, :version, "Show version" do
+    puts "#{Debugger::IDE::VERSION} using debugger #{Debugger::VERSION}"
+    exit
+  end
+end
+
+rdebug_path = File.expand_path($0)
+if ARGV.empty?
+  fail "No debugging target specified."
+end
+
+if params.dispatcher_port?
+  fail "multiprocess dispatch is not supported"
+end
+
+if params.int_handler
+  trap('INT') { Debugger.interrupt_last }
+end
+
+if params.debug?
+  Debugger::IDE.cli_debug = true
+end
+
+
+Debugger.keep_frame_binding = options.frame_bind
+Debugger.tracing = options.tracing
+
+
