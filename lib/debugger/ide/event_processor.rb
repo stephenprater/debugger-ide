@@ -6,7 +6,7 @@ module Debugger
       attr_accessor :line, :file, :context
 
       def initialize interface
-        @printer = Debugger::Printer.new self, Debugger::Formatters::XML
+        @printer = Debugger::Printer.new self, Debugger::Formatters::Xml
       end
              
       def at_breakpoint(context, breakpoint)

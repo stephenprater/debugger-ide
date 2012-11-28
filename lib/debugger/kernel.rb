@@ -6,10 +6,9 @@ module Kernel
     Debugger.current_context.stop_next = steps
   end
 
-  def listen_for_remote_debugger(*args)
-    Debugger::IDE.start_ide_thread(*args)
+  def listen_for_ide(*args)
+    Debugger::IDE.start_ide_control(*args)
   end
-
   #
   # Returns a binding of n-th call frame
   #

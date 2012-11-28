@@ -13,7 +13,7 @@ end
 
 module Debugger
   module IDE
-    class Interface < Debugger::Interface
+    class IDEInterface < Debugger::Interface
       attr_accessor :command_queue
       attr_accessor :socket
 

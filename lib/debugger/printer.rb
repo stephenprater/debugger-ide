@@ -7,7 +7,7 @@ module Debugger
 
     def initialize interface, formatter = Debugger::Formatters.const_get(self.class.to_s)
       @interface = interface
-      @formatter = formatter.new(self)
+      @formatter = formatter.instance
     end
 
     def method_missing meth, *args, &block
